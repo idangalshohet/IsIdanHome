@@ -165,7 +165,7 @@
 
             console.log(humanDateFormat)
             if(last_opened < 5){
-                resultBox.innerHTML = 'Right Now!';
+                resultBox.innerHTML = 'Door was opened just now!';
             }else{
                 resultBox.innerHTML = 'Door was last opened at ' + humanDateFormat;
             }
@@ -178,7 +178,7 @@
             current_weather = data.weather[0]
             current_conditions = data.condition[0]
             console.log(current_conditions)
-            resultBox.innerHTML = 'The Current Weather is ' + current_weather.toString() + '˚ Degrees Celcius with current condtions: ' + current_conditions.toString();
+            resultBox.innerHTML = 'The current weather is ' + current_weather.toString() + '˚ degrees celcius with current condition: ' + current_conditions.toString();
         }
 
     </script> 
