@@ -157,7 +157,8 @@
             current_door = data.door[0]
             console.log(current_door);
             const last_opened = data.door.findIndex(element => element == 1);
-            time_opened = data.time[27]
+            time_opened = data.time[last_opened]
+
 
             const milliseconds = time_opened * 1000 // 1575909015000
             const dateObject = new Date(milliseconds)
