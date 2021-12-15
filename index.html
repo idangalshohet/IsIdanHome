@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Is Idan Home?</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content = "width=device-width, initial-scale = 1">
+    <style>
+        * { box-sizing: border-box;}
+        body { max-width: 800px; width: 100%; margin: 1em auto; font-size: 2em; font-family: Arial;}
+        h1 { text-align: center}
+        h2 { text-align: center; color: red}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.2/dist/chart.min.js"></script>
+</head>
+<body>
+
+    <h1>Is Idan Home??</h1>
+    <div>
+        <h2 id="home"></h2>
+        <h2 id="door"></h2>
+        <h2 id="weather"></h2>
+    </div>
+    <main></main>
+    <canvas id="chart" width="400" height="100"></canvas>
+    <script>
+        const url = "https://docs.google.com/spreadsheets/d/13KG7gCvVdeD47y_CSGHr0QrVFpKIP93i6TztHEqPy6A/export?format=csv"
+
+        const url2 = "https://docs.google.com/spreadsheets/d/13KG7gCvVdeD47y_CSGHr0QrVFpKIP93i6TztHEqPy6A/export?format=csv&gid=283001257"
+        const url3 = "https://docs.google.com/spreadsheets/d/13KG7gCvVdeD47y_CSGHr0QrVFpKIP93i6TztHEqPy6A/export?format=csv&gid=1775907849"
+        const main = document.querySelector("main");
+
+        // chartIt();
+        async function chartIt(){
+            await getData();
+            const ctx = document.getElementById('chart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'line',  
+                data: {
+                    labels: xlables,
+                    datasets: [{
+                        label: 'Is Idan Home?',
+                        data: ystate,
+                        backgroundColor: 'rgba(255, 99, 132)',
+                        borderColor: 'rgba(255, 99, 132)',
+                        borderWidth: 1
+                    }]
+                },
+            });
+        }       
+
+        async function getHomeData() {
+            const home = [];
+            const xs = [];
+            const ys = [];
+
+            const response = await fetch(url);
+            const data = await response.text();
+            // console.log(data)
+
+            const table = data.split("\n");
+            table.forEach(row => {
+                const columns = row.split(',');
+
+                const year = columns[0];
+                const month = columns[1];
+                const day = columns[2];
+                const hour = columns[3];
+                const min = columns[4];
+                const state = columns[5];
+                const stamp = columns[6];
+                                
+                xs.push(day); 
+                ys.push(state);
+                home.push(state);
+            });
+            return {xs, ys, home}
+        }
+
+        getDoorData();
+        async function getDoorData() {
+            const door = [];
+            const time = [];
+
+            const response = await fetch(url2);
+            const data = await response.text();
+            // console.log(data)
+
+            const table = data.split("\n");
+            table.forEach(row => {
+                const columns = row.split(',');
+
+                const year = columns[0];
+                const month = columns[1];
+                const day = columns[2];
+                const hour = columns[3];
+                const min = columns[4];
+                const state = columns[5];
+                const stamp = columns[6];
+                
+                door.push(state);
+                time.push(stamp)
+
+                
+            });
+            return {door, time}
+        }
+
+        getWeatherData();
+        async function getWeatherData() {
+            const weather = [];
+            const condition = [];
+            const time = [];
+
+            const response = await fetch(url3);
+            const data = await response.text();
+            // console.log(data)
+
+            const table = data.split("\n");
+            table.forEach(row => {
+                const columns = row.split(',');
+
+                const year = columns[0];
+                const month = columns[1];
+                const day = columns[2];
+                const hour = columns[3];
+                const min = columns[4];
+                const state = columns[5];
+                const cond = columns[6];
+                const stamp = columns[7];
+                
+                weather.push(state);
+                condition.push(cond);
+                time.push(stamp);
+
+                
+            });
+            return {weather, condition, time}
+        }
+
+        checkHome();
+        async function checkHome(){
+            const data = await getHomeData();
+            var resultBox = document.getElementById("home")
+            current_home = data.home[0]
+            if(current_home == 0){
+                resultBox.innerHTML = 'Idan is not currently home!';
+            }else{
+                resultBox.innerHTML = 'Idan is home!';
+            }
+
+        }
+
+        checkDoor();
+        async function checkDoor(){
+            const data = await getDoorData();
+            var resultBox = document.getElementById("door")
+            current_door = data.door[0]
+            console.log(current_door);
+            const last_opened = data.door.findIndex(element => element == 1);
+            time_opened = data.time[27]
+
+            const milliseconds = time_opened * 1000 // 1575909015000
+            const dateObject = new Date(milliseconds)
+            const humanDateFormat = dateObject.toLocaleString() //2019-12-9 10:30:15
+
+            console.log(humanDateFormat)
+            if(last_opened < 5){
+                resultBox.innerHTML = 'Right Now!';
+            }else{
+                resultBox.innerHTML = 'Door was last opened at ' + humanDateFormat;
+            }
+        }
+
+        checkWeather();
+        async function checkWeather(){
+            const data = await getWeatherData();
+            var resultBox = document.getElementById("weather")
+            current_weather = data.weather[0]
+            current_conditions = data.condition[0]
+            console.log(current_conditions)
+            resultBox.innerHTML = 'The Current Weather is ' + current_weather.toString() + '˚ Degrees Celcius with current condtions: ' + current_conditions.toString();
+        }
+
+    </script> 
+<body>
+</html>
