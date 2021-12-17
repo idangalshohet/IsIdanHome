@@ -46,6 +46,9 @@ def is_connected(hostname):
 #lets us know if its in the period where we notify arrivals 
 def check_time():
     now = datetime.datetime.now()
+    if now.hour > 23 or now.hour < 7:
+      late = 1
+    return late
 
 #scans network to see if my phone is there 
 def check_if_home():
@@ -142,7 +145,8 @@ def sendtext():
                                 to='whatsapp:+447775441720' 
                                 ) 
 
-        # print(message.sid)
+        sent = 1
+        return sent
 
 def data_collection():
 
